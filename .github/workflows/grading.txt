@@ -1,0 +1,5 @@
+tests/test_entrypoints.py::test_entrypoint[01-light_direction.py] 2
+tests/test_entrypoints.py::test_entrypoint[02-diffuse.py] 2
+tests/test_entrypoints.py::test_entrypoint[03-specular.py] 2
+tests/test_entrypoints.py::test_entrypoint[04-ambient.py] 2
+tests/test_entrypoints.py::test_entrypoint[05-materials.py] 2

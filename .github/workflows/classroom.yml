@@ -1,0 +1,79 @@
+name: Autograding Tests
+on: push
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -e .[tests]
+          sudo apt-get update
+          sudo apt-get install -y             xvfb             libgl1-mesa-dev             libxrandr-dev             libxinerama-dev             libxcursor-dev             libxi-dev
+      - name: test_entrypoint[01-light_direction.py]
+        id: testentrypoint01-lightdirectionpy
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+            test-name: test_entrypoint[01-light_direction.py]
+            setup-command: ""
+            command: xvfb-run --auto-servernum pytest tests/test_entrypoints.py::test_entrypoint[01-light_direction.py]
+            timeout: 2
+            max-score: 2
+      - name: test_entrypoint[02-diffuse.py]
+        id: testentrypoint02-diffusepy
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+            test-name: test_entrypoint[02-diffuse.py]
+            setup-command: ""
+            command: xvfb-run --auto-servernum pytest tests/test_entrypoints.py::test_entrypoint[02-diffuse.py]
+            timeout: 2
+            max-score: 2
+      - name: test_entrypoint[03-specular.py]
+        id: testentrypoint03-specularpy
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+            test-name: test_entrypoint[03-specular.py]
+            setup-command: ""
+            command: xvfb-run --auto-servernum pytest tests/test_entrypoints.py::test_entrypoint[03-specular.py]
+            timeout: 2
+            max-score: 2
+      - name: test_entrypoint[04-ambient.py]
+        id: testentrypoint04-ambientpy
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+            test-name: test_entrypoint[04-ambient.py]
+            setup-command: ""
+            command: xvfb-run --auto-servernum pytest tests/test_entrypoints.py::test_entrypoint[04-ambient.py]
+            timeout: 2
+            max-score: 2
+      - name: test_entrypoint[05-materials.py]
+        id: testentrypoint05-materialspy
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+            test-name: test_entrypoint[05-materials.py]
+            setup-command: ""
+            command: xvfb-run --auto-servernum pytest tests/test_entrypoints.py::test_entrypoint[05-materials.py]
+            timeout: 2
+            max-score: 2
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          TESTENTRYPOINT01-LIGHTDIRECTIONPY_RESULTS: "${{steps.testentrypoint01-lightdirectionpy.outputs.result}}"
+          TESTENTRYPOINT02-DIFFUSEPY_RESULTS: "${{steps.testentrypoint02-diffusepy.outputs.result}}"
+          TESTENTRYPOINT03-SPECULARPY_RESULTS: "${{steps.testentrypoint03-specularpy.outputs.result}}"
+          TESTENTRYPOINT04-AMBIENTPY_RESULTS: "${{steps.testentrypoint04-ambientpy.outputs.result}}"
+          TESTENTRYPOINT05-MATERIALSPY_RESULTS: "${{steps.testentrypoint05-materialspy.outputs.result}}"
+        with:
+            runners: testentrypoint01-lightdirectionpy,testentrypoint05-materialspy,testentrypoint04-ambientpy,testentrypoint03-specularpy,testentrypoint02-diffusepy
+      
